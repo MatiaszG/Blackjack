@@ -40,36 +40,26 @@ void deal(vector<int> &deck, vector<int> &user_cards, vector<int> &dealer_cards)
     }
 }
 
-int sum_cards_value(vector<int> cards)
-{
-    int sum = 0;
-    for (int i = 0; i < cards.size(); i++)
-    {
-        sum += cards[i];
-    }
-    return sum;
-}
-
 int count_soft_sum(vector<int> cards)
 {
     int sum = 0;
-    for (int i = 0; i < cards.size(); i++)
+    int aces_number = 0;
+    for (int i = 0; i < cards.size(); i++) // przerobicz
     {
         if (cards[i] == 11)
         {
-            if (sum + 11 <= 21)
-            {
-                sum += 11;
-            }
-            else
-            {
-                sum += 1;
-            }
+            aces_number++;
+            sum += 1;
         }
         else
         {
             sum += cards[i];
         }
+    }
+    while (aces_number > 0 && (sum + 10) <= 21)
+    {
+        sum += 10;
+        aces_number--;
     }
     return sum;
 }
@@ -89,18 +79,13 @@ int count_current_sum(int hard_sum, int soft_sum)
 void play_dealer(vector<int> &deck, vector<int> &user_cards, vector<int> &dealer_cards, int &games_won, int &games_lost, int &games_draw, int current_sum_player)
 {
     int soft_sum_dealer, hard_sum_dealer, current_sum_dealer;
-
-    soft_sum_dealer = count_soft_sum(dealer_cards);
-    hard_sum_dealer = sum_cards_value(dealer_cards);
-    current_sum_dealer = count_current_sum(hard_sum_dealer, soft_sum_dealer);
+    current_sum_dealer = count_soft_sum(dealer_cards);
 
     while (current_sum_dealer < 17)
     {
         dealer_cards.push_back(deck.back());
         deck.pop_back();
-        hard_sum_dealer = sum_cards_value(dealer_cards);
-        soft_sum_dealer = count_soft_sum(dealer_cards);
-        current_sum_dealer = count_current_sum(hard_sum_dealer, soft_sum_dealer);
+        current_sum_dealer = count_soft_sum(dealer_cards);
     }
     if (current_sum_dealer <= 21 && current_sum_dealer > current_sum_player)
     {
@@ -137,9 +122,7 @@ void play(vector<int> &deck, vector<int> &user_cards, vector<int> &dealer_cards)
             cout << "Your new card's value: " << deck.back() << "\n";
             user_cards.push_back(deck.back());
             deck.pop_back();
-            hard_sum_player = sum_cards_value(user_cards);
-            soft_sum_player = count_soft_sum(user_cards);
-            current_sum_player = count_current_sum(hard_sum_player, soft_sum_player);
+            current_sum_player = count_soft_sum(user_cards);
 
             cout << "Your new total value: " << current_sum_player << "\n";
             if (current_sum_player > 21)
@@ -151,21 +134,17 @@ void play(vector<int> &deck, vector<int> &user_cards, vector<int> &dealer_cards)
     }
     if (current_sum_player <= 21)
     {
-        int soft_sum_dealer = count_soft_sum(dealer_cards);
-        int hard_sum_dealer = sum_cards_value(dealer_cards);
-        int current_sum_dealer = count_current_sum(hard_sum_dealer, soft_sum_dealer);
+        int current_sum_dealer = count_soft_sum(dealer_cards);
 
         cout << "Dealer's cards' values:\n";
         cout << dealer_cards[0] << " " << dealer_cards[1] << "\n\n";
 
         while (current_sum_dealer < 17)
         {
-            cout << "Dealer's new card's value: " << deck.back() << "\n";
+            cout << "Dealer's new card's value: " << deck.back() << "\n"; //uwzględnić asa jako 1
             dealer_cards.push_back(deck.back());
             deck.pop_back();
-            hard_sum_dealer = sum_cards_value(dealer_cards);
-            soft_sum_dealer = count_soft_sum(dealer_cards);
-            current_sum_dealer = count_current_sum(hard_sum_dealer, soft_sum_dealer);
+            current_sum_dealer = count_soft_sum(dealer_cards);
             cout << "Dealer's new total value: " << current_sum_dealer << "\n";
         }
         if (current_sum_dealer <= 21 && current_sum_dealer > current_sum_player)
@@ -211,25 +190,20 @@ void play_never_bust(vector<int> &deck, vector<int> &user_cards, vector<int> &de
     int games_draw = 0;
 
     for (int i = 0; i < number_of_games; i++)
-    {
-        if ((float)deck.size() * number_of_decks / (52.0 * number_of_decks) < deck_penetration / 100)
-        {
+    {   
+        if ((float)deck.size() / (52.0 * number_of_decks) < (100 - deck_penetration) / 100)
+        {  
             initialize_deck(deck, number_of_decks);
             shuffle_deck(deck);
         }
-
         deal(deck, user_cards, dealer_cards);
-        hard_sum_player = sum_cards_value(user_cards);
-        soft_sum_player = count_soft_sum(user_cards);
-        current_sum_player = count_current_sum(hard_sum_player, soft_sum_player);
+        current_sum_player = count_soft_sum(user_cards);
 
         while (current_sum_player <= 11)
         {
             user_cards.push_back(deck.back());
             deck.pop_back();
-            hard_sum_player = sum_cards_value(user_cards);
-            soft_sum_player = count_soft_sum(user_cards);
-            current_sum_player = count_current_sum(hard_sum_player, soft_sum_player);
+            current_sum_player = count_soft_sum(user_cards);
         }
         play_dealer(deck, user_cards, dealer_cards, games_won, games_lost, games_draw, current_sum_player);
 
