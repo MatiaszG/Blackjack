@@ -44,7 +44,7 @@ int count_soft_sum(vector<int> cards)
 {
     int sum = 0;
     int aces_number = 0;
-    for (int i = 0; i < cards.size(); i++) // przerobicz
+    for (int i = 0; i < cards.size(); i++)
     {
         if (cards[i] == 11)
         {
@@ -141,7 +141,7 @@ void play(vector<int> &deck, vector<int> &user_cards, vector<int> &dealer_cards)
 
         while (current_sum_dealer < 17)
         {
-            cout << "Dealer's new card's value: " << deck.back() << "\n"; //uwzględnić asa jako 1
+            cout << "Dealer's new card's value: " << deck.back() << "\n"; 
             dealer_cards.push_back(deck.back());
             deck.pop_back();
             current_sum_dealer = count_soft_sum(dealer_cards);
