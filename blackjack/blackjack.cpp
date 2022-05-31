@@ -190,9 +190,9 @@ void play_never_bust(vector<int> &deck, vector<int> &user_cards, vector<int> &de
     int games_draw = 0;
 
     for (int i = 0; i < number_of_games; i++)
-    {   
+    {
         if ((float)deck.size() / (52.0 * number_of_decks) < (100 - deck_penetration) / 100)
-        {  
+        {
             initialize_deck(deck, number_of_decks);
             shuffle_deck(deck);
         }
