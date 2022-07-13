@@ -1,2 +1,2 @@
 # Blackjack
-Blackjack simulator.
+Blackjack simulator. [IN PROGRESS]
